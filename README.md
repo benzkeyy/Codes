@@ -1,2 +1,4 @@
 # hello-world
-Just another repository.
+Hi,
+My name is Harshit Sinha and I am a student at NIT Allahabad.
+My branch is CSE.
