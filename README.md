@@ -1,4 +1,2 @@
-# hello
-Hi,
-My name is Harshit Sinha and I am a student at NIT Allahabad.
-My branch is CSE.
+# Codes
+This repo contains codes and algorithms to some problems from various competitive coding websites.
