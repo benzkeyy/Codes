@@ -89,3 +89,43 @@ int main()
 	search(text, pattern); 
 	return 0; 
 } 
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+// FOR COMPUTING Z-ARRAY -
+int z[10000000];
+// c is the pattern and s is the string.
+int computezay(string c, string s)
+{
+	string input = c + "$" + s;
+	int left = 0,right=0;
+	z[0] = 0;
+	int k1;
+	for(ll i = 1; i < input.length(); i++)
+	{
+		if(i > right)
+		{
+			left=right=i;
+			while(right < input.length() && input[right] == input[right-left])
+				right++;
+			z[i] = right-left;
+			right--;
+		}
+		else
+		{
+			k1 = i-left;
+			if(right + 1 > i + z[k1])
+			{
+				z[i] = z[k1];
+			}
+			else
+			{
+				left = i;
+				while(right < input.length() && input[right] == input[right-left])
+					right++;
+				z[i] = right-left;
+				right--;
+			}
+		}
+	}
+	return input.size();
+}
