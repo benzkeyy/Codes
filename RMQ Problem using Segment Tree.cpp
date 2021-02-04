@@ -7,80 +7,69 @@ q l r -> min value in range [L,R].
 
 #include <bits/stdc++.h>
 #define endl '\n'
-#define ll long long
 using namespace std;
-
-int tree[1000002];
-int arr[1000002];
-
-void build(int pos, int low, int high)
+#define fast std::ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+int tree[4*100004];
+int arr[100004];
+void buildtree(int start, int end, int treeNode)
 {
-	if(low == high)
-	{
-		tree[pos] = arr[low];
-		return;
-	}
-	int mid = low + (high-low)/2;
-	build(2*pos,low,mid);
-	build(2*pos+1,mid+1,high);
-	tree[pos] = min(tree[2*pos],tree[2*pos+1]);
+    if(start == end)
+    {
+        tree[treeNode] = arr[start];
+        return;
+    }
+    int mid = (end+start)/2;
+    buildtree(start,mid,2*treeNode);
+    buildtree(mid+1,end,2*treeNode+1);
+    tree[treeNode] = min(tree[2*treeNode],tree[2*treeNode+1]);
+    return;
 }
-void update(int pos, int low, int high,int index, int val)
+void update(int start, int end, int treeNode,int idx, int val)
 {
-	if(low == high)
-	{
-		arr[index] = val;
-		tree[pos] = val;
-	}
-	else
-	{
-		int mid = low + (high-low)/2;
-		if(low <= index && index <= mid)
+    if(start == end)
+    {
+        arr[idx] = val;
+        tree[treeNode] = val;
+        return;
+    }
+    int mid = (end+start)/2;
+    if(idx > mid)
+    	update(mid+1,end,2*treeNode+1,idx,val);
+    else if(idx >= start && idx <= mid)
+    	update(start,mid,2*treeNode,idx,val);
+    tree[treeNode] = min(tree[2*treeNode],tree[2*treeNode+1]);
+    return;
+}
+int que(int start,int end,int left,int right,int treeNode)
+{
+    if(start > right || left > end)
+        return INT_MAX;
+    if(left <= start && right >= end)
+        return tree[treeNode];
+    int mid = (end+start)/2;
+    int ans1 = que(start,mid,left,right,2*treeNode);
+    int ans2 = que(mid+1,end,left,right,2*treeNode+1);
+    return min(ans1,ans2);
+}
+int main() 
+{
+    fast;
+    int n,q; cin>>n>>q;
+    for(int i = 0; i < n; i++) cin>>arr[i];
+    buildtree(0,n-1,1);
+    while(q--)
+    {
+        char c; int x,y; cin>>c>>x>>y;
+        if(c == 'u')
         {
-            update(2*pos, low, mid, index, val);
+            x--;
+            update(0,n-1,1,x,y);
         }
         else
         {
-            update(2*pos+1, mid+1, high, index, val);
+            x--; y--;
+            cout << que(0,n-1,x,y,1) << endl;
         }
-        tree[pos] = min(tree[2*pos],tree[2*pos+1]);
-	}
-}
-int query(int pos, int low,int high, int l, int r)
-{
-	if(l > high || r < low)
-	{
-		return INT_MAX;
-	}
-	if(l <= low && r >= high)
-	{
-		return tree[pos];
-	}
-	
-	int mid = low + (high-low)/2;
-	return min(query(2*pos,low,mid,l,r),query(2*pos+1,mid+1,high,l,r));
-}
-int main()
-{
-	fast;
-	//memset(arr,0,sizeof(arr));
-	//memset(tree,0,sizeof(tree));
-	ll N,l,r,Q;
-	char c;
-	cin>>N>>Q;
-	for(ll i = 1; i <= N; i++) cin>>arr[i];
-	build(1,1,N-1); // Building the segment tree!
-	while(Q--)
-	{
-		cin>>c>>l>>r;
-		if(c == 'q')
-		{
-			cout << query(1,1,N-1,l,r) << endl;
-		}
-		else if(c == 'u')
-		{
-			update(1,1,N-1,l,r);
-		}
-	}
-	return 0;
+    }
+    return 0;
 }
