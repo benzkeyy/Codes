@@ -19,7 +19,6 @@ using namespace std;
 #define fast std::ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
 pair<int,int> tree[4*100004];
 int arr[100004];
-vector<int>v;
 void buildtree(int start, int end, int treeNode)
 {
     if(start == end)
@@ -38,6 +37,10 @@ void buildtree(int start, int end, int treeNode)
     int maxi1 = max(a,c);
     int maxi2 = min(max(a,d),max(b,c));
     tree[treeNode] = {maxi1,maxi2};
+	/**
+	We need to select top 2 elements out of 4..
+	it is done by maxi1 and maxi2..
+	**/
     return;
 }
 void update(int start, int end, int treeNode,int idx, int val)
